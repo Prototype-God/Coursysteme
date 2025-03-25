@@ -20,9 +20,12 @@ public class AdministrateurDAO {
      */
     public Administrateur getByCredentials(String username, String password) {
         try {
-            String sql = "SELECT * FROM ADMINISTRATEUR WHERE USERNAME = ? AND PASSWORD = ?";
+            // Debug info
+            System.out.println("Tentative de connexion admin : " + username + " / " + password);
+
+            String sql = "SELECT * FROM ADMINISTRATEUR WHERE UPPER(USERNAME) = ? AND PASSWORD = ?";
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setString(1, username);
+            stmt.setString(1, username.toUpperCase()); // Ignorer la casse pour le nom d'utilisateur
             stmt.setString(2, password);
 
             ResultSet rs = stmt.executeQuery();

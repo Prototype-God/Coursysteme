@@ -1,45 +1,114 @@
-package dao;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-/**
- * Classe d'acces a la base de donnees
- * 
- * @author ESIGELEC - TIC Department
- * @version 2.0
- * */
-public class ConnectionDAO {
-	/**
-	 * Parametres de connexion a la base de donnees oracle
-	 * URL, LOGIN et PASS sont des constantes
-	 */
-	// � utiliser si vous �tes sur une machine personnelle :
-	//final static String URL   = "jdbc:oracle:thin:@oracle.esigelec.fr:1521:orcl";
-	
-	// � utiliser si vous �tes sur une machine de l'école :
-	final static String URL   = "jdbc:oracle:thin:@//srvoracledb.intranet.int:1521/orcl.intranet.int";
+package gui;
 
-	final static String LOGIN = "C##BDD7_4";   // remplacer les ********. Exemple C##BDD1_1
-	final static String PASS  = "BDD74";   // remplacer les ********. Exemple BDD11
-	
-	/**
-	 * Constructor
-	 * 
-	 */
-	public ConnectionDAO() {
-		// chargement du pilote de bases de donnees
-		try {
-			Class.forName("oracle.jdbc.OracleDriver");
-		} catch (ClassNotFoundException e) {
-			System.err.println("Impossible de charger le pilote de BDD, ne pas oublier d'importer le fichier .jar dans le projet");
-		}
-	}
-	 public Connection getConnection() {
-	        try {
-	            return DriverManager.getConnection(URL, LOGIN, PASS);
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	            return null;
-	        }
-	    }
+import dao.AdministrateurDAO;
+import dao.ConnectionDAO;
+import dao.EtudiantDAO;
+import model.Administrateur;
+import model.Etudiant;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+
+public class LoginGUI {
+    private JFrame frame;
+    private JTextField usernameField;
+    private JPasswordField passwordField;
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            LoginGUI login = new LoginGUI();
+            login.frame.setVisible(true);
+        });
+    }
+
+    public LoginGUI() {
+        initialize();
+    }
+
+    private void initialize() {
+        frame = new JFrame("Connexion - Choisir le type d'utilisateur");
+        frame.setBounds(100, 100, 420, 250);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(null);
+
+        JLabel userLabel = new JLabel("Nom d'utilisateur:");
+        userLabel.setBounds(50, 30, 120, 25);
+        frame.add(userLabel);
+
+        usernameField = new JTextField();
+        usernameField.setBounds(180, 30, 150, 25);
+        frame.add(usernameField);
+
+        JLabel passwordLabel = new JLabel("Mot de passe:");
+        passwordLabel.setBounds(50, 70, 120, 25);
+        frame.add(passwordLabel);
+
+        passwordField = new JPasswordField();
+        passwordField.setBounds(180, 70, 150, 25);
+        frame.add(passwordField);
+
+        JButton adminLoginButton = new JButton("Admin Login");
+        adminLoginButton.setBounds(60, 130, 120, 30);
+        frame.add(adminLoginButton);
+
+        JButton etudiantLoginButton = new JButton("Etudiant Login");
+        etudiantLoginButton.setBounds(220, 130, 140, 30);
+        frame.add(etudiantLoginButton);
+
+        // 🔒 Bouton admin
+        adminLoginButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String username = usernameField.getText();
+                String password = String.valueOf(passwordField.getPassword());
+
+                ConnectionDAO connectionDAO = new ConnectionDAO();
+                Connection conn = connectionDAO.getConnection();
+
+                if (conn == null) {
+                    JOptionPane.showMessageDialog(frame, "Erreur de connexion à la base de données.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                AdministrateurDAO adminDao = new AdministrateurDAO(conn);
+                Administrateur admin = adminDao.getByCredentials(username, password);
+
+                if (admin != null) {
+                    JOptionPane.showMessageDialog(frame, "✅ Connexion admin réussie !");
+                    frame.dispose();
+                    // TODO: ouvrir l'interface AdminGUI
+                } else {
+                    JOptionPane.showMessageDialog(frame, "❌ Identifiants admin incorrects", "Erreur", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        // 🎓 Bouton étudiant
+        etudiantLoginButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String username = usernameField.getText();
+                String password = String.valueOf(passwordField.getPassword());
+
+                ConnectionDAO connectionDAO = new ConnectionDAO();
+                Connection conn = connectionDAO.getConnection();
+
+                if (conn == null) {
+                    JOptionPane.showMessageDialog(frame, "Erreur de connexion à la base de données.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                EtudiantDAO etuDao = new EtudiantDAO(conn);
+                Etudiant etu = etuDao.getByCredentials(username, password);
+
+                if (etu != null) {
+                    JOptionPane.showMessageDialog(frame, "✅ Connexion étudiant réussie !");
+                    frame.dispose();
+                    // TODO: ouvrir StudentGUI 选课页面
+                } else {
+                    JOptionPane.showMessageDialog(frame, "❌ Identifiants étudiant incorrects", "Erreur", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+    }
 }

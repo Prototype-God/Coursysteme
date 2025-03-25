@@ -2,7 +2,9 @@ package gui;
 
 import dao.AdministrateurDAO;
 import dao.ConnectionDAO;
+import dao.EtudiantDAO;
 import model.Administrateur;
+import model.Etudiant;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -26,8 +28,8 @@ public class LoginGUI {
     }
 
     private void initialize() {
-        frame = new JFrame("Connexion - Administrateur");
-        frame.setBounds(100, 100, 400, 200);
+        frame = new JFrame("Connexion - Choisir le type d'utilisateur");
+        frame.setBounds(100, 100, 420, 250);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
 
@@ -47,17 +49,20 @@ public class LoginGUI {
         passwordField.setBounds(180, 70, 150, 25);
         frame.add(passwordField);
 
-        JButton loginButton = new JButton("Se connecter");
-        loginButton.setBounds(120, 110, 150, 30);
-        frame.add(loginButton);
+        JButton adminLoginButton = new JButton("Admin Login");
+        adminLoginButton.setBounds(60, 130, 120, 30);
+        frame.add(adminLoginButton);
 
-        // 👉 使用真实数据库验证
-        loginButton.addActionListener(new ActionListener() {
+        JButton etudiantLoginButton = new JButton("Etudiant Login");
+        etudiantLoginButton.setBounds(220, 130, 140, 30);
+        frame.add(etudiantLoginButton);
+
+        // 🔒 Bouton admin
+        adminLoginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String username = usernameField.getText();
                 String password = String.valueOf(passwordField.getPassword());
 
-                // Connexion à la BDD via DAO
                 ConnectionDAO connectionDAO = new ConnectionDAO();
                 Connection conn = connectionDAO.getConnection();
 
@@ -70,12 +75,38 @@ public class LoginGUI {
                 Administrateur admin = adminDao.getByCredentials(username, password);
 
                 if (admin != null) {
-                    JOptionPane.showMessageDialog(frame, "✅ Connexion réussie !");
+                    JOptionPane.showMessageDialog(frame, "✅ Connexion admin réussie !");
                     frame.dispose();
-                    // TODO: lancer l'interface AdminGUI ici
-                    // new AdminGUI(admin); // par exemple
+                    // TODO: ouvrir l'interface AdminGUI
                 } else {
-                    JOptionPane.showMessageDialog(frame, "❌ Identifiants incorrects", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "❌ Identifiants admin incorrects", "Erreur", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        // 🎓 Bouton étudiant
+        etudiantLoginButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String username = usernameField.getText();
+                String password = String.valueOf(passwordField.getPassword());
+
+                ConnectionDAO connectionDAO = new ConnectionDAO();
+                Connection conn = connectionDAO.getConnection();
+
+                if (conn == null) {
+                    JOptionPane.showMessageDialog(frame, "Erreur de connexion à la base de données.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                EtudiantDAO etuDao = new EtudiantDAO(conn);
+                Etudiant etu = etuDao.getByCredentials(username, password);
+
+                if (etu != null) {
+                    JOptionPane.showMessageDialog(frame, "✅ Connexion étudiant réussie !");
+                    frame.dispose();
+                    // TODO: ouvrir StudentGUI 选课页面
+                } else {
+                    JOptionPane.showMessageDialog(frame, "❌ Identifiants étudiant incorrects", "Erreur", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });

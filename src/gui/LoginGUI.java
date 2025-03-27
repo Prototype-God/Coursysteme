@@ -75,7 +75,7 @@ public class LoginGUI {
                 Administrateur admin = adminDao.getByCredentials(username, password);
 
                 if (admin != null) {
-                    JOptionPane.showMessageDialog(frame, "✅ Connexion admin réussie !");
+                	JOptionPane.showMessageDialog(frame, "✅ Connexion admin réussie !\nBienvenue " + admin.getUsername());
                     frame.dispose();
                     // TODO: ouvrir l'interface AdminGUI
                 } else {
@@ -102,7 +102,8 @@ public class LoginGUI {
                 Etudiant etu = etuDao.getByCredentials(username, password);
 
                 if (etu != null) {
-                    JOptionPane.showMessageDialog(frame, "✅ Connexion étudiant réussie !");
+                	JOptionPane.showMessageDialog(frame,
+                		    "✅ Connexion réussie !\nBienvenue " + etu.getPrenom() + " " + etu.getNom());
                     frame.dispose();
                     // TODO: ouvrir StudentGUI 选课页面
                 } else {

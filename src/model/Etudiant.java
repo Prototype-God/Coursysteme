@@ -10,6 +10,8 @@ public class Etudiant {
 	    protected String dateNaissance;
 	    protected String username;
 	    protected String password;
+	    protected int rang;
+	    protected int idPh;
 /**
  * Constructeur
  * @param nom 
@@ -31,11 +33,18 @@ public class Etudiant {
 	        this.password = password;
 	    }
 
-	    public Etudiant(String nom2, String prenom2, String filiere2, int promo2, String dateNaissance2, String username2,
-		String password2, int rang, int idPh) {
-	// TODO Auto-generated constructor stub
+	    public Etudiant(String nom, String prenom, String filiere, int promo, String dateNaissance,
+                String username, String password, int rang, int idPh) {
+    this.nom = nom;
+    this.prenom = prenom;
+    this.filiere = filiere;
+    this.promo = promo;
+    this.dateNaissance = dateNaissance;
+    this.username = username;
+    this.password = password;
+    this.rang = rang;
+    this.idPh = idPh;
 }
-
 		public String getNom() {
 	        return nom;
 	    }
@@ -91,5 +100,19 @@ public class Etudiant {
 	    public void setPassword(String password) {
 	        this.password = password;
 	    }
+	    public int getRang() {
+	        return rang;
+	    }
 
+	    public void setRang(int rang) {
+	        this.rang = rang;
+	    }
+
+	    public int getIdPh() {
+	        return idPh;
+	    }
+
+	    public void setIdPh(int idPh) {
+	        this.idPh = idPh;
+	    }
 }

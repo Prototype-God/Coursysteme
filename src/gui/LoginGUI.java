@@ -57,7 +57,7 @@ public class LoginGUI {
         etudiantLoginButton.setBounds(220, 130, 140, 30);
         frame.add(etudiantLoginButton);
 
-        // 🔒 Bouton admin
+        //  Bouton admin
         adminLoginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String username = usernameField.getText();
@@ -84,7 +84,7 @@ public class LoginGUI {
             }
         });
 
-        // 🎓 Bouton étudiant
+        //  Bouton étudiant
         etudiantLoginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String username = usernameField.getText();
@@ -105,7 +105,7 @@ public class LoginGUI {
                 	JOptionPane.showMessageDialog(frame,
                 		    "✅ Connexion réussie !\nBienvenue " + etu.getPrenom() + " " + etu.getNom());
                     frame.dispose();
-                    // TODO: ouvrir StudentGUI 选课页面
+                    //  ouvrir StudentGUI 
                 } else {
                     JOptionPane.showMessageDialog(frame, "❌ Identifiants étudiant incorrects", "Erreur", JOptionPane.ERROR_MESSAGE);
                 }

@@ -119,6 +119,11 @@ public class AdminIHM {
         btnNewButton_1.setFont(new Font("Times New Roman", Font.BOLD, 18));
         btnNewButton_1.setBounds(125, 273, 313, 56);
         jframe.getContentPane().add(btnNewButton_1);
+        btnNewButton_1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                new ProcedureFrame(); 
+            }
+        });
 
         JButton btnNewButton_2 = new JButton("MODIFIER LES INFORMATIONS");
         btnNewButton_2.setFont(new Font("Times New Roman", Font.BOLD, 18));

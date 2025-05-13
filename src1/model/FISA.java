@@ -44,7 +44,7 @@ public class FISA extends Etudiants {
 	    }
 
 	    /**
-	     * Trie les dominantes par ordre alphabétique（可以替换为别的排序标准）
+	     * Trie les dominantes par ordre alphabétique
 	     */
 	    public ArrayList<Dominantes> classerLesDominantes() {
 	        Collections.sort(listeDominantes, (d1, d2) -> d1.getNom().compareToIgnoreCase(d2.getNom()));

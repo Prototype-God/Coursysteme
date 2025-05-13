@@ -1,15 +1,13 @@
+
 package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import model.Etudiants;
+import java.util.List;
+import java.util.ArrayList;
+
 public class EtudiantDAO {
 
 	 private Connection connection;
@@ -70,48 +68,70 @@ public class EtudiantDAO {
 	        
 	        return status;
 	    }
+	    
+	    public List<String> getDominantesByUsername(String username) {
+	        List<String> dominantes = new ArrayList<>();
+	        String sql = "SELECT NOM_DOMIN FROM SAVE_CHOIX_ETU WHERE USERNAME = ? ORDER BY RANG_CHOIX";
 
-		public Etudiants getByNomPrenom(String nom, String prenom) {
+	        try (Connection conn = ConnectionDAO.getConnection();
+	             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-			    try {
-			        String sql = "SELECT * FROM ETUDIANT WHERE NOM = ? AND PRENOM = ?";
-			        PreparedStatement stmt = connection.prepareStatement(sql);
-			        stmt.setString(1, nom);
-			        stmt.setString(2, prenom);
-			        ResultSet rs = stmt.executeQuery();
+	            stmt.setString(1, username);
+	            ResultSet rs = stmt.executeQuery();
 
-			        if (rs.next()) {
-			            return new Etudiants(
-			                rs.getString("NOM"),
-			                rs.getString("PRENOM"),
-			                rs.getString("FILIERE"),
-			                rs.getInt("PROMO"),
-			                rs.getString("DATENAISSANCE"),
-			                rs.getString("USERNAME"),
-			                rs.getString("PASSWORD")
-			            );
-			        }
-			    } catch (SQLException e) {
-			        e.printStackTrace();
-			    }
-			    return null;
-			}
-		public List<String> getDominantesByUsername(String username) {
-			List<String> dominantes = new ArrayList<>();
-		    String sql = "SELECT NOM_DOMI FROM ETUDIANTS_DOMI WHERE USERNAME_ETUDIANT = ?";
+	            while (rs.next()) {
+	                dominantes.add(rs.getString("NOM_DOMIN"));
+	            }
 
-		    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-		        stmt.setString(1, username);
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+
+	        return dominantes;
+	    }
+	    
+	    public static List<String> getAllDominantes() {
+	        List<String> dominantes = new ArrayList<>();
+
+	        try (Connection conn = ConnectionDAO.getConnection();
+	             PreparedStatement stmt = conn.prepareStatement("SELECT NOM FROM DOMINANTES");
+	             ResultSet rs = stmt.executeQuery()) {
+
+	            while (rs.next()) {
+	                dominantes.add(rs.getString("NOM"));
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+
+	        return dominantes;
+	    }
+
+	    public Etudiants getByNomPrenom(String nom, String prenom) {
+
+		    try {
+		        String sql = "SELECT * FROM ETUDIANT WHERE NOM = ? AND PRENOM = ?";
+		        PreparedStatement stmt = connection.prepareStatement(sql);
+		        stmt.setString(1, nom);
+		        stmt.setString(2, prenom);
 		        ResultSet rs = stmt.executeQuery();
 
-		        while (rs.next()) {
-		            dominantes.add(rs.getString("NOM_DOMI"));
+		        if (rs.next()) {
+		            return new Etudiants(
+		                rs.getString("NOM"),
+		                rs.getString("PRENOM"),
+		                rs.getString("FILIERE"),
+		                rs.getInt("PROMO"),
+		                rs.getString("DATENAISSANCE"),
+		                rs.getString("USERNAME"),
+		                rs.getString("PASSWORD")
+		            );
 		        }
 		    } catch (SQLException e) {
-		        System.err.println("Erreur lors de la récupération des dominantes : " + e.getMessage());
-		        // On retourne quand même une liste vide pour éviter NullPointerException
+		        e.printStackTrace();
 		    }
-		    return dominantes;
+		    return null;
 		}
-		
+
+
 }

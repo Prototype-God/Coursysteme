@@ -367,7 +367,58 @@ public class AdminIHM {
             }
         });
         
+        
+        JButton btnAutoAffect = new JButton("Valider");
+        btnAutoAffect.setFont(new Font("Times New Roman", Font.BOLD, 18));
+        btnAutoAffect.setBounds(125, 470, 313, 56);
+        jframe.getContentPane().add(btnAutoAffect);
 
+        btnAutoAffect.addActionListener(e -> {
+            try {
+                Connection conn = ConnectionDAO.getConnection();
+                conn.setAutoCommit(false); // ✅ 关闭自动提交，允许你用 commit()
+
+                dao.ChoixDAO.effectuerAttributionAutomatique(conn);
+
+                conn.commit(); // ✅ 手动提交
+                JOptionPane.showMessageDialog(jframe, "✅ Attribution automatique terminée !");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(jframe, "❌ Erreur lors de l'attribution.");
+            }
+        });
+        
+        JButton btnDistribuer = new JButton("Autodistribuer");
+        btnDistribuer.setFont(new Font("Times New Roman", Font.BOLD, 18));
+        btnDistribuer.setBounds(125, 540, 313, 56); 
+        jframe.getContentPane().add(btnDistribuer);
+
+        btnDistribuer.addActionListener(e -> {
+            try {
+                Connection conn = ConnectionDAO.getConnection();
+                conn.setAutoCommit(false);
+
+                dao.ChoixDAO.autoDistribuerSansChoix(conn);
+                conn.commit();
+
+                JOptionPane.showMessageDialog(jframe, "🎯 Autodistribution terminée !");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(jframe, "❌ Erreur dans l’autodistribution.");
+            }
+        });
+        
+        
+        JButton btnForcer = new JButton("Forcer inscription");
+        btnForcer.setFont(new Font("Times New Roman", Font.BOLD, 18));
+        btnForcer.setBounds(125, 610, 313, 56);
+        jframe.getContentPane().add(btnForcer);
+
+        btnForcer.addActionListener(e -> {
+            new ForcerInscriptionFrame();
+        });
         jframe.setVisible(true);
     }
+
+	
 }

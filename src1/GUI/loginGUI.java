@@ -102,7 +102,7 @@ public class loginGUI {
 	                	AdminIHM adihm = new AdminIHM();
 	                    frame.dispose();
 	                 
-	                    // TODO: ouvrir l'interface AdminGUI
+	              
 	                } else {
 	                    JOptionPane.showMessageDialog(frame, "❌ Identifiants admin incorrects", "Erreur", JOptionPane.ERROR_MESSAGE);
 	                }
@@ -132,15 +132,14 @@ public class loginGUI {
 	                	JOptionPane.showMessageDialog(frame,
 	                		    " Connexion réussie !\nBienvenue " + etu.getPrenom() + " " + etu.getNom());
 	                	
-	                	int id = etu.getId();           // récupéré depuis la base de données
-	                	String statut = etu.getStatut(); // FISE ou FISA
+	                	int id = etu.getId();           
+	                	String statut = etu.getStatut();
 
 	                
 	                	EtudiantIHM etuIHM = new EtudiantIHM();
 	                	
 	                    frame.dispose();
-	                    
-	                    // TODO: ouvrir StudentGUI	                
+	                                    
 	                    } 
 	                    else {
 	                    JOptionPane.showMessageDialog(frame, "❌ Identifiants étudiant incorrects", "Erreur", JOptionPane.ERROR_MESSAGE);

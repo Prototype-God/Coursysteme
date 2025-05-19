@@ -6,11 +6,17 @@ import stockage.StudentStatut;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.awt.Font;
 import java.awt.Color;
 import java.util.List;
 import java.util.ArrayList;
 import dao.ChoixDAO;
+import dao.ConnectionDAO;
+
 import javax.swing.GroupLayout.Alignment;
 
 public class choix_FISA {
@@ -26,6 +32,33 @@ public class choix_FISA {
 	    }
 
 	    public choix_FISA(){
+	    
+		    	try (Connection conn = ConnectionDAO.getConnection()) {
+		    	    PreparedStatement stmt = conn.prepareStatement(
+		    	        "SELECT FISA_OUVERT, FISA_DEBUT, FISA_FIN FROM PROCEDURE_STATUT ORDER BY ID DESC FETCH FIRST 1 ROWS ONLY"
+		    	    );
+		    	    ResultSet rs = stmt.executeQuery();
+
+		    	    if (rs.next()) {
+		    	        int ouvert = rs.getInt("FISA_OUVERT");
+		    	        Date debut = rs.getDate("FISA_DEBUT");
+		    	        Date fin = rs.getDate("FISA_FIN");
+		    	        Date now = new Date(System.currentTimeMillis());
+
+		    	        if (!(ouvert == 1 && !now.before(debut) && !now.after(fin))) {
+		    	            JOptionPane.showMessageDialog(null, "❌ La période de choix FISE n’est pas active.");
+		    	            return;
+		    	        }
+		    	    } else {
+		    	        JOptionPane.showMessageDialog(null, "❌ Aucune période définie pour FISE.");
+		    	        return;
+		    	    }
+		    	} catch (Exception e) {
+		    	    e.printStackTrace();
+		    	    JOptionPane.showMessageDialog(null, "❌ Erreur lors de la vérification de la période.");
+		    	    return;
+		    	}
+
 	        initialize();
 	    }
 

@@ -46,11 +46,11 @@ public class choix_FISA {
 		    	        Date now = new Date(System.currentTimeMillis());
 
 		    	        if (!(ouvert == 1 && !now.before(debut) && !now.after(fin))) {
-		    	            JOptionPane.showMessageDialog(null, "❌ La période de choix FISE n’est pas active.");
+		    	            JOptionPane.showMessageDialog(null, "❌ La période de choix FISA n’est pas active.");
 		    	            return;
 		    	        }
 		    	    } else {
-		    	        JOptionPane.showMessageDialog(null, "❌ Aucune période définie pour FISE.");
+		    	        JOptionPane.showMessageDialog(null, "❌ Aucune période définie pour FISA.");
 		    	        return;
 		    	    }
 		    	} catch (Exception e) {

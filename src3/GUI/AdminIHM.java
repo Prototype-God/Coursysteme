@@ -482,7 +482,7 @@ public class AdminIHM {
 
                 try (Connection conn = ConnectionDAO.getConnection()) {
                     PreparedStatement stmt = conn.prepareStatement(
-                        "INSERT INTO PROCEDURE_STATUT " +
+                        "UPDATE INTO PROCEDURE_STATUT " +
                         "(ID, FISE_OUVERT, FISE_DEBUT, FISE_FIN, FISA_OUVERT, FISA_DEBUT, FISA_FIN) " +
                         "VALUES (?, ?, TO_DATE(?, 'YYYY-MM-DD'), TO_DATE(?, 'YYYY-MM-DD'), ?, TO_DATE(?, 'YYYY-MM-DD'), TO_DATE(?, 'YYYY-MM-DD'))"
                     );

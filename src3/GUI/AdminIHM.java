@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.awt.Font;
 import java.awt.Color;
@@ -120,7 +121,7 @@ public class AdminIHM {
             }
         });
 
-        JButton btnNewButton_1 = new JButton("LANCEMENT PROCEDURE");
+        JButton btnNewButton_1 = new JButton("Modifier l'ETAT de dominant");
         btnNewButton_1.setFont(new Font("Times New Roman", Font.BOLD, 18));
         btnNewButton_1.setBounds(125, 273, 313, 56);
         jframe.getContentPane().add(btnNewButton_1);
@@ -398,12 +399,12 @@ public class AdminIHM {
         
         
         
-        JButton btnDistribuer = new JButton("Autodistribuer");
-        btnDistribuer.setFont(new Font("Times New Roman", Font.BOLD, 18));
-        btnDistribuer.setBounds(125, 540, 313, 56); 
-        jframe.getContentPane().add(btnDistribuer);
+        JButton btnDistribuer3 = new JButton("Autodistribuer");
+        btnDistribuer3.setFont(new Font("Times New Roman", Font.BOLD, 18));
+        btnDistribuer3.setBounds(125, 540, 313, 56); 
+        jframe.getContentPane().add(btnDistribuer3);
 
-        btnDistribuer.addActionListener(e -> {
+        btnDistribuer3.addActionListener(e -> {
             try {
                 Connection conn = ConnectionDAO.getConnection();
                 conn.setAutoCommit(false);
@@ -418,10 +419,7 @@ public class AdminIHM {
             }
         });
         
-        
-        
-        
-        
+ 
         
         
         JButton btnForcer = new JButton("Forcer inscription");
@@ -433,7 +431,82 @@ public class AdminIHM {
             new ForcerInscriptionFrame();
         });
         jframe.setVisible(true);
-    }
+        
+        JButton btnLancerProc = new JButton("Lancer la procédure");
+        btnLancerProc.setBounds(125, 690, 250, 40);
+        btnLancerProc.setFont(new Font("Times New Roman", Font.BOLD, 16));
+        jframe.getContentPane().add(btnLancerProc);
+        btnLancerProc.addActionListener(e -> {
+            JFrame procFrame = new JFrame("Lancement de procédure");
+            procFrame.setSize(400, 300);
+            procFrame.setLayout(null);
 
-	
+            JLabel lblDebut = new JLabel("Date de début (YYYY-MM-DD) :");
+            lblDebut.setBounds(30, 30, 200, 25);
+            procFrame.add(lblDebut);
+
+            JTextField dateDebutField = new JTextField();
+            dateDebutField.setBounds(220, 30, 130, 25);
+            procFrame.add(dateDebutField);
+
+            JLabel lblFin = new JLabel("Date de fin (YYYY-MM-DD) :");
+            lblFin.setBounds(30, 70, 200, 25);
+            procFrame.add(lblFin);
+
+            JTextField dateFinField = new JTextField();
+            dateFinField.setBounds(220, 70, 130, 25);
+            procFrame.add(dateFinField);
+
+            JCheckBox checkFISE = new JCheckBox("FISE");
+            checkFISE.setBounds(100, 110, 80, 25);
+            procFrame.add(checkFISE);
+
+            JCheckBox checkFISA = new JCheckBox("FISA");
+            checkFISA.setBounds(200, 110, 80, 25);
+            procFrame.add(checkFISA);
+
+            JButton validerBtn = new JButton("Valider");
+            validerBtn.setBounds(140, 160, 100, 30);
+            procFrame.add(validerBtn);
+
+            validerBtn.addActionListener(ev -> {
+                String dateDebut = dateDebutField.getText().trim();
+                String dateFin = dateFinField.getText().trim();
+                boolean fise = checkFISE.isSelected();
+                boolean fisa = checkFISA.isSelected();
+
+                if (dateDebut.isEmpty() || dateFin.isEmpty() || (!fise && !fisa)) {
+                    JOptionPane.showMessageDialog(procFrame, "Veuillez remplir toutes les informations.");
+                    return;
+                }
+
+                try (Connection conn = ConnectionDAO.getConnection()) {
+                    PreparedStatement stmt = conn.prepareStatement(
+                        "INSERT INTO PROCEDURE_STATUT " +
+                        "(ID, FISE_OUVERT, FISE_DEBUT, FISE_FIN, FISA_OUVERT, FISA_DEBUT, FISA_FIN) " +
+                        "VALUES (?, ?, TO_DATE(?, 'YYYY-MM-DD'), TO_DATE(?, 'YYYY-MM-DD'), ?, TO_DATE(?, 'YYYY-MM-DD'), TO_DATE(?, 'YYYY-MM-DD'))"
+                    );
+
+                    stmt.setInt(1, 1); 
+                    stmt.setInt(2, fise ? 1 : 0); 
+                    stmt.setString(3, fise ? dateDebut : null); 
+                    stmt.setString(4, fise ? dateFin : null);   
+                    stmt.setInt(5, fisa ? 1 : 0); 
+                    stmt.setString(6, fisa ? dateDebut : null); 
+                    stmt.setString(7, fisa ? dateFin : null);  
+
+                    stmt.executeUpdate();
+                    JOptionPane.showMessageDialog(procFrame, "✅ Procédure enregistrée !");
+                    procFrame.dispose();
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(procFrame, "❌ Erreur lors de l'enregistrement.");
+                }
+            });
+
+            procFrame.setVisible(true);
+        });
+ 
+    }
 }

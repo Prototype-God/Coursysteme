@@ -67,4 +67,19 @@ public class AdministrateurDAO extends ConnectionDAO {
         return returnValue; // Aucun administrateur trouvé
     }
 
+    public boolean estProcedureOuverte(String filiere) {
+        try (Connection conn = ConnectionDAO.getConnection();
+             PreparedStatement stmt = conn.prepareStatement("SELECT ouverte FROM procedure WHERE filiere = ?")) {
+            stmt.setString(1, filiere);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getBoolean("ouverte");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+   
 }

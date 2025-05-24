@@ -11,14 +11,15 @@ import java.sql.SQLException;
  * */
 public class ConnectionDAO {
 	
-	
+	    
+	   
 		/**
 		 * Parametres de connexion a la base de donnees oracle
 		 * URL, LOGIN et PASS sont des constantes
 		 */
 		
 	   // machine personelle donc....
-		final static String URL   = "jdbc:oracle:thin:@srvoracledb.intranet.int:1521:orcl";
+		final static String URL   = "jdbc:oracle:thin:@oracle.esigelec.fr:1521:orcl";
 		
 		final static String LOGIN = "C##BDD7_4"; //nom de conexion
 		final static String PASS  = "BDD74";  //mot de passe de conexion
@@ -36,7 +37,7 @@ public class ConnectionDAO {
 				System.err.println("Impossible de charger le pilote de BDD, ne pas oublier d'importer le fichier .jar dans le projet");
 			}
 		}
-		 public Connection getConnection() {
+		 public static Connection getConnection() {
 		        try {
 		            return DriverManager.getConnection(URL, LOGIN, PASS);
 		        } catch (SQLException e) {
@@ -45,3 +46,5 @@ public class ConnectionDAO {
 		        }
 		    }
 	}
+
+
